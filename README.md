@@ -114,7 +114,7 @@
 
 			Graph.adjacencyList : A function to create a adjacency list to represent the Graph network
 
-	c. Functinal Class (Anomaly_detec)
+	c. Functional Class (Anomaly_detec)
 
 		attributes :
 		 Anomaly_detec.network : A graph class to save the social network
