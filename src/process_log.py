@@ -20,6 +20,14 @@ import sys
 batch = sys.argv[1]
 stream = sys.argv[2]  #"../log_input/stream_log.json"
 flag = sys.argv[3]    #"../log_output/flagged_purchases.json"
+try :
+    D = int(sys.argv[4])
+except :
+    D = 1
+try : 
+    T = int(sys.argv[5])
+except :
+    T = 10
 
 #batch = "../log_input/batch_log.json"
 #stream = "../log_input/stream_log.json"              
@@ -33,9 +41,10 @@ anomaly = Anomaly_detec()
 ## Caution the run time increase significantly with D
 ## D = 2 is ~ 70 times slower than D = 1
 ## D = 3 is ~ 20 times slower than D = 2
-anomaly.D = 1
-anomaly.T = 10
-
+anomaly.D = D
+anomaly.T = T
+print("The degree of neighbor is " + str(D)) 
+print("The number of latest purchase is " +str(T))
 ## Read intial datasets from batch 
 start = timeit.default_timer()
 anomaly.read_batch(batch)
