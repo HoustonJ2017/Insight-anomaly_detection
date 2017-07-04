@@ -9,14 +9,15 @@
 
 	a. python 3.5 was used for this challenge.
 
-	b. undirected graph was selected to represent the social networks, and additional attributes were added for fast update purpose. For each vertice : name (int), neighbors(list), neighbors of degree d (dict), self purchase historay of length T (FIFO queue of length T), and purchase history of length T for neighbors of degree d (FIFO queue of length T)  
+	b. undirected graph was selected to represent the social networks, which is a dictionary for all the vertices. For each vertice, additional attributes were added for fast update purpose : name (int), neighbors(list), neighbors of degree d (dict), self purchase historay of length T (FIFO queue of length T), and purchase history of length T for neighbors of degree d (FIFO queue of length T)  
 	
-	c. To initialize and update all attributes in the network, I use BFS to find the nearest neighbors of degree d, and update attributes, which has a complexity of O(V + E) for degree of 1. 
-	   For the streaming update (when reading in one line from stream log), the initialized attributes in the network was used to update the affected vertices. The time complexity is O(Size of degree d neighbors).  
+	c. To initialize and update all attributes in the network, I use BFS to find the nearest neighbors of degree d, and update attributes, which has a complexity of O(V + E) for degree of 1.
+	
+	d. For the streaming update (when reading in one line from stream log), the initialized attributes in the network was used to update the affected vertices. The time complexity is O(Size of degree d neighbors).  
 
-	d. Three major classes were used for implement this anmoaly detection and they are saved in the file (/src/anomaly_detec.py) : Detailed documents can be found in section 3 below.
+	e. Three major classes were used for implement this anmoaly detection and they are saved in the file (/src/anomaly_detec.py) : Detailed documents can be found in section 3 below.
 
-	e. The order of prcesses in process_log.py :
+	f. The order of prcesses in process_log.py :
 
 	   (1) Create a new Class Anomaly_detec
 
