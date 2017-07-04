@@ -98,13 +98,23 @@ class Vertex:
                 return False
  
     def add_nd(self, nname,ndegree):
-        self.neighbors_d[nname] = ndegree
-        if ndegree in self.neighbors_d2:
-            self.neighbors_d2[ndegree].append(nname)
-        else:
-            self.neighbors_d2[ndegree] = [nname]
+        ## If nname is already in the neighbors_d, use the smallest ndegree
+        if nname in self.neighbors_d :
+            if ndegree < self.neighbors_d[nname]:
+#                if self.name == "3":
+#                    print(self.neighbors_d,self.neighbors_d2,nname,ndegree)
+                self.neighbors_d2[self.neighbors_d[nname]].remove(nname)
+                self.neighbors_d2[ndegree].append(nname)
+                self.neighbors_d[nname] = ndegree
+        else :
+            self.neighbors_d[nname] = ndegree                    
+            if ndegree in self.neighbors_d2:
+                self.neighbors_d2[ndegree].append(nname)
+            else:
+                self.neighbors_d2[ndegree] = [nname]
         return 
     def rm_nd(self,nname):
+        
         self.neighbors_d2[self.neighbors_d[nname]].remove(nname)
         del self.neighbors_d[nname]
         return 
@@ -295,6 +305,8 @@ class Anomaly_detec:
     def init_neighb_D(self,vid):
         D = self.D
         T = self.T
+        self.network.vertices[vid].neighbors_d = {}
+        self.network.vertices[vid].neighbors_d2 = {}
         ## Add current name to dict for BFS 
         self.network.vertices[vid].add_nd(vid,0)
         next_layer = self.network.vertices[vid].neighbors
@@ -448,21 +460,27 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                         self.network.add_edge(newuser1,
                                               self.network.vertices[cid2])
                         ## Update D degree neighbors layer by layer
-                        c_neighbors_d = self.network.vertices[cid2].neighbors_d2.copy()
+                        c_neighbors_d = {}
+                        for d in range(1,self.D + 1):
+                            c_neighbors_d[d] = self.network.vertices[cid2].neighbors_d2[d].copy()
                         c_neighbors_d[0] = cid2
+
                         for d in range(self.D): ## d degree
                             ## Update for cid2           
+                            #print(c_neighbors_d,d)
                             for keyi in c_neighbors_d[d]:
-                                if keyi != cid2 :
+                                if keyi != cid1 :
                                     self.add_ave_sd_np_id(keyi,cid1) ## Update ave and sd  neig_purchases
                                     self.network.vertices[keyi].add_nd(cid1,d+1)
                             ## Update for cid1
+                            #print(c_neighbors_d,d)
+                                
                             for keyi in c_neighbors_d[d]:
+                            #    print(cid1,keyi)
                                 self.add_ave_sd_np_id(cid1,keyi)
                                 self.network.vertices[cid1].add_nd(keyi,d+1)
                                 
                             
-                                                      
                     elif cid2 not in self.network.vertices:
                         print("New User registered",cid2)
                         newuser2 = Vertex(cid2,self.T)
@@ -470,7 +488,9 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                         self.network.add_edge(self.network.vertices[cid1],
                                               newuser2)
                         ## Update D degree neighbors layer by layer
-                        c_neighbors_d = self.network.vertices[cid1].neighbors_d2.copy()
+                        c_neighbors_d = {}
+                        for d in range(1,self.D + 1):
+                            c_neighbors_d[d] = self.network.vertices[cid1].neighbors_d2[d].copy()
                         c_neighbors_d[0] = cid1
                         for d in range(self.D): ## d degree
                             
@@ -487,9 +507,14 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                         self.network.add_edge(self.network.vertices[cid1],
                                               self.network.vertices[cid2])    
                         ## Update D degree neighbors layer by layer
-                        c_neighbors_d1 = self.network.vertices[cid1].neighbors_d2.copy()
+                        c_neighbors_d1 = {}
+                        for d in range(1,self.D + 1):
+                            c_neighbors_d1[d] = self.network.vertices[cid1].neighbors_d2[d].copy()
                         c_neighbors_d1[0] = [cid1]
-                        c_neighbors_d2 = self.network.vertices[cid2].neighbors_d2.copy()
+                        
+                        c_neighbors_d2 = {}
+                        for d in range(1,self.D + 1):
+                            c_neighbors_d2[d] = self.network.vertices[cid2].neighbors_d2[d].copy()
                         c_neighbors_d2[0] = [cid2]
 
                         for d in range(self.D):
@@ -522,20 +547,13 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                     ## check if new user : add in the network and unfriend
                     if cid1 not in self.network.vertices and cid2 not in \
                     self.network.vertices :
-                        newuser1 = Vertex(cid1,self.T)
-                        newuser2 = Vertex(cid2,self.T)
-                        self.network.add_vertices([newuser1,newuser2])
+                        print("Users ",cid1,cid2," doesn't exist")
                        
                     elif cid1 not in self.network.vertices:
-                        newuser1 = Vertex(cid1,self.T)
-                        self.network.add_vertex(newuser1)
-                        self.network.rm_edge(newuser1,
-                                              self.network.vertices[cid2])
+                        print("User ",cid1, "doesn't exist")
+                        
                     elif cid2 not in self.network.vertices:
-                        newuser2 = Vertex(cid2,self.T)
-                        self.network.add_vertex(newuser2)
-                        self.network.rm_edge(self.network.vertices[cid1],
-                                              newuser2)
+                        print("User ",cid2, "doesn't exist")
                     else:
                         if cid2 not in self.network.vertices[cid1].neighbors:
                             print(cid1," and ",cid2," are not friends")
@@ -543,29 +561,33 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                             self.network.rm_edge(self.network.vertices[cid1],
                                               self.network.vertices[cid2])            
                         ## Update D degree neighbors layer by layer
-                            c_neighbors_d1 = self.network.vertices[cid1].neighbors_d2.copy()
+                        
+                            c_neighbors_d1 = {}
+                            for d in range(1,self.D + 1):
+                                c_neighbors_d1[d] = self.network.vertices[cid1].neighbors_d2[d].copy()
                             c_neighbors_d1[0] = [cid1]
-                            c_neighbors_d2 = self.network.vertices[cid2].neighbors_d2.copy()
+                        
+                            c_neighbors_d2 = {}
+                            for d in range(1,self.D + 1):
+                                c_neighbors_d2[d] = self.network.vertices[cid2].neighbors_d2[d].copy()
                             c_neighbors_d2[0] = [cid2]
+                        
+                        ## Remove the items which connect cid1 and cid2 through other paths
+#                            cid1_neig_dict = self.network.vertices[cid1].neighbors_d.copy()
+#                            cid2_neig_dict = self.network.vertices[cid1].neighbors_d.copy()
+                            
+                            
+                            
                             for d in range(self.D):
-                            ## Get the keys with value equal i
                             ## Update cid1 and its networks(without cid2)
                                 for key1 in c_neighbors_d1[d]:   ## IDs in each degree
-                                    for d2 in range(self.D -d):  ## Degress of 2 to remove in
-                                        for key2_rm in c_neighbors_d2[d2]:
-                                            if key2_rm != key1 :
-#                                            print(key1,key2_rm,cid1,cid2,d2,d)
-                                                self.network.vertices[key1].rm_nd(
-                                                key2_rm)
+                                    self.init_ave_sd_id(key1)
+
                     
                             ## Update cid2 and its networks(without cid1)
                                 for key2 in c_neighbors_d2[d]:   ## IDs in each degree
-                                    for d1 in range(self.D -d):  ## Degress of 2 to rm in
-                                        for key1_rm in c_neighbors_d1[d1]:
-                                            if key1_rm != key2 :
-#                                                print(key2,key1_rm,cid1,cid2,d1,d)
-                                                self.network.vertices[key2].rm_nd(
-                                                key1_rm)
+                                    self.init_ave_sd_id(key1)
+
   
         if self.flag_dyn[0] == True :
             print("Saved flagged event in " + self.flag_dyn[1])
