@@ -21,7 +21,7 @@
 
 	   (1) Create a new Class Anomaly_detec
 
-	   (2) Set the desired D (Degree) and T (Latest T Transactions with in the network) (Defaul D = 2, T = 50)
+	   (2) Set the desired D (Degree) and T (Latest T Transactions with in the network) (Defaul D = 1, T = 10)
 
 	   (3) Read batchlog file
 
