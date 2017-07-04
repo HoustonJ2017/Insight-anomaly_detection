@@ -478,17 +478,19 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                                 for d2 in range(self.D -d):  ## Degress of 2 to add in
                                     for key2_add in c_neighbors_d2[d2]:
 #                                        print(key2_add)
-                                        self.network.vertices[key1].add_nd(
+                                        if key2_add != key1:
+                                            self.network.vertices[key1].add_nd(
                                                 key2_add,d2+1 + d)
-                                        self.add_ave_sd_np_id(key1,key2_add)
+                                            self.add_ave_sd_np_id(key1,key2_add)
                                 
                             ## Update cid2 and its networks(without cid1)
                             for key2 in c_neighbors_d2[d]:   ## IDs in each degree
                                 for d1 in range(self.D -d):  ## Degress of 2 to add in
                                     for key1_add in c_neighbors_d1[d1]:
-                                        self.network.vertices[key2].add_nd(
+                                        if key1_add != key2 :
+                                            self.network.vertices[key2].add_nd(
                                                 key1_add,d1+1 + d)
-                                        self.add_ave_sd_np_id(key2,key1_add)                      
+                                            self.add_ave_sd_np_id(key2,key1_add)                      
 
 ## After unfriend, the network structure changes, but the purchase impact can't be affected
                 if event_type == "unfriend" :
