@@ -6,49 +6,85 @@
 
 
 1. Summary of code challenges :
+
 a. python 3.5 was used for this challenge.
+
 b. undirected graph was selected to represent the social networks
+
 c. Three major classes were used for implement this anmoaly detection and they are saved in the file (/src/anomaly_detec.py):
    Detailed documents can be found in section 3 below.
+   
 d. The order of prcesses in process_log.py :
+
    (1) Create a new Class Anomaly_detec
+   
    (2) Set the desired D (Degree) and T (Latest T Transactions with in the network) (Defaul D = 2, T = 50)
+   
    (3) Read batchlog file
+   
    (4) Initialize the network with all the attributes updated
+   
    (5) Read stream file and update the corresponding attributes in the network dynamically
+   
    (6) Either write the flagged event dynamically to output file or write to the output file after update all the stream file. 
 
 
-2. The libaray necessary to run the code
-   I used "json" library in the code, which can be download here (https://github.com/python/cpython/blob/3.6/Lib/json/__init__.py)
-   I used the standard "numpy" library for mean and sd calculation. (https://pypi.python.org/pypi/numpy/1.6.1)
-   I used the module deque from "collection" (FIFO queue with fixed length of T) (https://docs.python.org/2/library/collections.html)
-   I used "timeit" module to do the speed test of each individual process (https://github.com/python/cpython/blob/2.7/Lib/timeit.py)
-   I used "sys" module to get the system argument from command line 
+2. The libaray necessary to run the code : 
+
+   (a) used "json" library in the code, which can be download here (https://github.com/python/cpython/blob/3.6/Lib/json/__init__.py)
+   
+   (b) used the standard "numpy" library for mean and sd calculation. (https://pypi.python.org/pypi/numpy/1.6.1)
+   
+   (c) used the module deque from "collection" (FIFO queue with fixed length of T) (https://docs.python.org/2/library/collections.html)
+   
+   (d) used "timeit" module to do the speed test of each individual process (https://github.com/python/cpython/blob/2.7/Lib/timeit.py)
+   
+   (e) used "sys" module to get the system argument from command line 
 
 3. Class documents
 
 a. Data Structure Class (Vertex):
- attributes:
-    Vertex.name : The user name : e.g. Vertex.name = "2"
-    Vertex.neighbors : The list of 1st degree neighbors 
-    Vertex.neighbors_d : A dictionary contains the neighbors of degree D as key, and the degree as value 
-    Vertex.neighbors_d2 : A dictionary contains degree as key, and the neigbhors of degree as a value list
+
+attributes:           
+
+    Vertex.name : The user name : e.g. Vertex.name = "2"  
+    
+    Vertex.neighbors : The list of 1st degree neighbors  
+    
+    Vertex.neighbors_d : A dictionary contains the neighbors of degree D as key, and the degree as value   
+    
+    Vertex.neighbors_d2 : A dictionary contains degree as key, and the neigbhors of degree as a value list   
+    
     Vertex.self_purchase : A FIFO queue with fixed length of T contains the latest purchase history of this user.
+    
     			   Each element is [eadin_index, timestamp,amount of purchases, Name]
-    Vertex.neig_purchase : A FIFO queue with fixed length of T contains the latest purchase history of all neighboring users of degree D
-    			   Each element is [eadin_index, timestamp,amount of purchases, Name]
-    Vertex.ave : The average amount of purchases in the latest T purchases from the neighboring users of degree D
-    Vertex.sd : The standard deviation of purchases in the latest T purchases from the neighboring users of degree D
- functions : 
-    Vertex.add_neighbor(neighbor) : A function adding another vertex into Vertex.neighbors
-    Vertex.add_neighbors(neigbhors) : A function adding a list of  vertices into  Vertex.neighbors
+               
+    Vertex.neig_purchase : A FIFO queue with fixed length of T contains the latest purchase history of all neighboring users of degree D 
+    
+    			   Each element is [eadin_index, timestamp,amount of purchases, Name] 
+               
+     Vertex.ave : The average amount of purchases in the latest T purchases from the neighboring users of degree D  
+    
+     Vertex.sd : The standard deviation of purchases in the latest T purchases from the neighboring users of degree D 
+    
+functions :     
+
+    Vertex.add_neighbor(neighbor) : A function adding another vertex into Vertex.neighbors    
+    
+    Vertex.add_neighbors(neigbhors) : A function adding a list of  vertices into  Vertex.neighbors   
+    
     Vertex.add_nd(neighbor,degree) : A function adding a vertex as the neighbor of degree into the Vertex.neighbors_d and Vertex.neighbors_d2
+    
     Vertex.rm_nd(neighbor) : A function removing a vertex from Vertex.neighbors_d and Vertex.neighbors_d2
+    
     Vertex.rm_neighbor(neighbor)  : A function removing a vertex from  Vertex.neighbors
+    
     Vertex.rm_neighbors(neighbors) : A function removing a list of vertices from  Vertex.neighbors
+    
     Vertex.add_order(readin_index,timestamp,amount) : A function adding an element into the Vertex.self_purchase
+    
     Vertex.add_neig_purchase(neighbor,readin_index,timestamp,amount) : A function adding an element into Vertex.neig_purchase
+    
 b. Data Structure Class (Graph):
  attributes :
     Graph.vertices : A dictionary of vetices : Name of the vertex as key, the vertex as value
