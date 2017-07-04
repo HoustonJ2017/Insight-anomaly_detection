@@ -7,7 +7,7 @@
 3. Documents for the defined classes : 
 
 
-	1. Summary of code challenges :
+ 1.  Summary of code challenges :
 
 	a. python 3.5 was used for this challenge.
 
@@ -31,7 +31,7 @@
    (6) Either write the flagged event dynamically to output file or write to the output file after update all the stream file. 
 
 
-	2. The libaray necessary to run the code : 
+2. The libaray necessary to run the code : 
 
    (a) used "json" library in the code, which can be download here (https://github.com/python/cpython/blob/3.6/Lib/json/__init__.py)
    
