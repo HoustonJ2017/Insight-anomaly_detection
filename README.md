@@ -16,17 +16,17 @@
 
 	d. The order of prcesses in process_log.py :
 
-   (1) Create a new Class Anomaly_detec
-   
-   (2) Set the desired D (Degree) and T (Latest T Transactions with in the network) (Defaul D = 2, T = 50)
-   
-   (3) Read batchlog file
-   
-   (4) Initialize the network with all the attributes updated
-   
-   (5) Read stream file and update the corresponding attributes in the network dynamically
-   
-   (6) Either write the flagged event dynamically to output file or write to the output file after update all the stream file. 
+	   (1) Create a new Class Anomaly_detec
+
+	   (2) Set the desired D (Degree) and T (Latest T Transactions with in the network) (Defaul D = 2, T = 50)
+
+	   (3) Read batchlog file
+
+	   (4) Initialize the network with all the attributes updated
+
+	   (5) Read stream file and update the corresponding attributes in the network dynamically
+
+	   (6) Either write the flagged event dynamically to output file or write to the output file after update all the stream file. 
 
 
 2. The libaray necessary to run the code : 
