@@ -1,8 +1,12 @@
 # Insight-anomaly_detection
 # Table of Contents
 1. Summary of code challenges : anomaly detection
+
 2. The libaray necessary to run the code
+
 3. Documents for the defined classes : 
+
+
 
 
 1. Summary of code challenges :
@@ -86,34 +90,61 @@ functions :
     Vertex.add_neig_purchase(neighbor,readin_index,timestamp,amount) : A function adding an element into Vertex.neig_purchase
     
 b. Data Structure Class (Graph):
+
  attributes :
+ 
     Graph.vertices : A dictionary of vetices : Name of the vertex as key, the vertex as value
+    
  functions :    
+ 
     Graph.add_vertex(vertex): A function adding a vertex into Graph.vertices
+    
     Graph.add_vertices(vertex) :  A function adding a list of  vertices into Graph.vertices
+    
     Graph.add_edge(vertex1,vertex2) : Adding the neighbor relationship between vertex1 and vertex 2
+    
     Graph.add_edges(vertex_list) : Adding the neighbor relationships for a list of two vertices
+    
     Graph.rm_edge(vertex1,vertex2) : removing the neighbor relationship between vertex1 and vertex 2
+    
     Graph.rm_edges(vertex_list): removing the neighbor relationships for a list of two vertices
+    
     Graph.add_order(name,readin_index,timestamp,amount) : adding an element of purchase into the Vertices[name].self_purchase
+    
     Graph.add_neig_purchase(neig_name,idname,read_index,timestamp,amount) : adding an element of purchase into the Vertices[name].neig_purchase
+    
     Graph.adjacencyList : A function to create a adjacency list to represent the Graph network
 
 c. Functinal Class (Anomaly_detec)
+
   attributes :
    Anomaly_detec.network : A graph class to save the social network
+   
    Anomaly_detec.anomaly : A list of anomalic purchases (Flagged) events
+   
    Anomaly_detec.D : Degree of neighbors : the more degree, the slower the code run
+   
    Anomaly_detec.T : The number of latest purchases within the neighboring network to assess the current purchases
+   
    Anomaly_detec.flag_dyn(default [False,filepath] : Whether write the flagged event dynamically into the filepath while reading and update the stream log
+   
    				                     This won't overwrite the exist file, but write new line at the end of the file
+                                    
   functions : 
+  
    Anomaly.write_anomaly(filepath): Write the Anomaly_detec.anomaly into filepath
+   
    Anomaly.read_batch(batch) : Read the batch logs from batch file, save into  Anomaly_detec.network
+   
    Anomaly.init_neighb_D(name): For Vertex with name, use BFS to search all the neigbhors of degree d and update the Vertex.neighbors_d, and Vertex.neighbors_d2
+   
    Anomaly.update_ave_sd(name) : For Vertex with name, update the average and standard deviation using the Vertex.neig_purchase (The neighbor network purchases)
+   
    Anomaly.init_ave_sd_id(name) : Initialize and update all the attributes for Vertex (name)
+   
    Anomaly.init_ave_sd_all :  Initialize and update all the attributes for all vertices within the network
+   
    Anomaly.add_ave_sd_np_id(name,added_vertices) : Update attributes: Vertex.neig_purchase, Vertex.ave, Vertex.sd using assuming the added_vertices were added into the neighbor network
+   
    Anomaly.read_flag_stream(stream) : Read stream log from stream, update the network dynamically when an event was readin
    
