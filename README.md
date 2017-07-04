@@ -1,10 +1,8 @@
 # Insight-anomaly_detection
 # Table of Contents
-1. Summary of code challenges 
-
-2. The libaray necessary to run the code
-
-3. Documents for the defined classes : 
+    1. Summary of code challenges 
+    2. The libaray necessary to run the code
+    3. Documents for the defined classes : 
 
 
  1.  Summary of code challenges :
