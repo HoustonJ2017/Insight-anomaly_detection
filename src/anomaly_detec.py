@@ -353,11 +353,18 @@ class Anomaly_detec:
     def add_ave_sd_np_id(self,nid,add_ids): ## add_ids is a list
         D = self.D
         T = self.T
+        nid_neighbors_d = self.network.vertices[nid].neighbors_d
         D_purchased = []
         D_purchased = list(self.network.vertices[nid].neig_purchase)   
+#        print("Before add",nid,add_ids,D_purchased)
+#        print(add_ids in nid_neighbors_d)
+#        print(nid_neighbors_d)
         [D_purchased.extend(list(self.network.vertices[add_id].self_purchase)) 
-                                 for add_id in add_ids]
+                                 for add_id in add_ids if add_id not in \
+                                 nid_neighbors_d]
+#        print("After add",nid,D_purchased)
         D_purchased = sorted(D_purchased,key=lambda x : (x[1],x[0]))
+#        print("After sort",nid,D_purchased[-self.T:])
         self.network.vertices[nid].neig_purchase = D_purchased[-self.T:]
         self.update_ave_sd(nid)
         
@@ -431,9 +438,11 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                     self.network.vertices :
                         newuser1 = Vertex(cid1,self.T)
                         newuser2 = Vertex(cid2,self.T)
-                        self.network.add_vertices([newuser1,newuser2])
                         self.network.add_edge(newuser1,newuser2)
+                        self.network.add_vertices([newuser1,newuser2])
+                        print("New User registered",cid1,cid2)
                     elif cid1 not in self.network.vertices:
+                        print("New User registered",cid1)
                         newuser1 = Vertex(cid1,self.T)
                         self.network.add_vertex(newuser1)
                         self.network.add_edge(newuser1,
@@ -442,13 +451,20 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                         c_neighbors_d = self.network.vertices[cid2].neighbors_d2.copy()
                         c_neighbors_d[0] = cid2
                         for d in range(self.D): ## d degree
-                            ## Get the keys with value equal i
+                            ## Update for cid2           
                             for keyi in c_neighbors_d[d]:
-                                self.network.vertices[keyi].add_nd(cid1,d+1)
-                                self.add_ave_sd_np_id(keyi,[cid1]) ## Update ave and sd  neig_purchases
-        
+                                if keyi != cid2 :
+                                    self.add_ave_sd_np_id(keyi,cid1) ## Update ave and sd  neig_purchases
+                                    self.network.vertices[keyi].add_nd(cid1,d+1)
+                            ## Update for cid1
+                            for keyi in c_neighbors_d[d]:
+                                self.add_ave_sd_np_id(cid1,keyi)
+                                self.network.vertices[cid1].add_nd(keyi,d+1)
+                                
+                            
                                                       
                     elif cid2 not in self.network.vertices:
+                        print("New User registered",cid2)
                         newuser2 = Vertex(cid2,self.T)
                         self.network.add_vertex(newuser2)
                         self.network.add_edge(self.network.vertices[cid1],
@@ -457,10 +473,15 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                         c_neighbors_d = self.network.vertices[cid1].neighbors_d2.copy()
                         c_neighbors_d[0] = cid1
                         for d in range(self.D): ## d degree
-                            ## Get the keys with value equal i
+                            
                             for keyi in c_neighbors_d[d]:
-                                self.network.vertices[keyi].add_nd(cid2,d+1)
-                                self.add_ave_sd_np_id(keyi,[cid2]) ## Update ave and sd  neig_purchases                   
+                                if keyi != cid2 : 
+                                    self.add_ave_sd_np_id(keyi,cid2) ## Update ave and sd  neig_purchases 
+                                    self.network.vertices[keyi].add_nd(cid2,d+1)
+                            ## Update for cid2
+                            for keyi in c_neighbors_d[d]:
+                                self.add_ave_sd_np_id(cid2,keyi)
+                                self.network.vertices[cid2].add_nd(keyi,d+1)                                                       
 
                     else:
                         self.network.add_edge(self.network.vertices[cid1],
@@ -479,19 +500,20 @@ event_type,ctimestamp,cid,camount,float(cmean),float(csd))
                                     for key2_add in c_neighbors_d2[d2]:
 #                                        print(key2_add)
                                         if key2_add != key1:
+                                            self.add_ave_sd_np_id(key1,key2_add)
                                             self.network.vertices[key1].add_nd(
                                                 key2_add,d2+1 + d)
-                                            self.add_ave_sd_np_id(key1,key2_add)
+                                            
                                 
                             ## Update cid2 and its networks(without cid1)
                             for key2 in c_neighbors_d2[d]:   ## IDs in each degree
                                 for d1 in range(self.D -d):  ## Degress of 2 to add in
                                     for key1_add in c_neighbors_d1[d1]:
                                         if key1_add != key2 :
+                                            self.add_ave_sd_np_id(key2,key1_add)
                                             self.network.vertices[key2].add_nd(
                                                 key1_add,d1+1 + d)
-                                            self.add_ave_sd_np_id(key2,key1_add)                      
-
+                                                                  
 ## After unfriend, the network structure changes, but the purchase impact can't be affected
                 if event_type == "unfriend" :
                     cid1 = parseline["id1"]
